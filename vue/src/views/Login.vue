@@ -22,6 +22,18 @@
       </p>
     </div>
     <form class="mt-8 space-y-6" @submit="login">
+      <div
+        v-if="errorMsg"
+        class="flex items-center justify-between py-2 px-4 bg-red-500 text-white rounded"
+      >
+        {{ errorMsg }}
+        <span @click="errorMsg = ''">
+          <XMarkIcon
+            class="h-5 w-5 text-white rounded-full transition-colors cursor-pointer hover:bg-[rgba(0,0,0,0.2)]"
+            aria-hidden="true"
+          />
+        </span>
+      </div>
       <input type="hidden" name="remember" value="true" />
       <div class="-space-y-px rounded-md shadow-sm">
         <div>
@@ -86,15 +98,23 @@
 </template>
 
 <script>
-import { LockClosedIcon } from "@heroicons/vue/20/solid";
+import { LockClosedIcon, XMarkIcon } from "@heroicons/vue/20/solid";
 import router from "../router";
 import store from "../store";
+import { ref } from "vue";
 
 export default {
   components: {
     LockClosedIcon,
+    XMarkIcon,
   },
+  setup() {
+    // let errorMsg = ref("");
 
+    return {
+      errorMsg: ref(""),
+    };
+  },
   data() {
     return {
       user: {
@@ -109,7 +129,10 @@ export default {
       ev.preventDefault();
       store
         .dispatch("login", this.user)
-        .then((res) => router.push({ name: "Dashboard" }));
+        .then((res) => router.push({ name: "Dashboard" }))
+        .catch((err) => {
+          this.errorMsg = err.response.data.error;
+        });
     },
   },
 };

@@ -38,10 +38,9 @@
                     class="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     <span class="sr-only">Open user menu</span>
-                    <img
-                      class="h-8 w-8 rounded-full"
-                      :src="user.imageUrl"
-                      alt=""
+                    <UserCircleIcon
+                      class="h-10 w-10 text-white rounded-full transition-colors hover:bg-[rgba(150,150,150,0.2)]"
+                      aria-hidden="true"
                     />
                   </MenuButton>
                 </div>
@@ -107,7 +106,10 @@
         <div class="border-t border-gray-700 pt-4 pb-3">
           <div class="flex items-center px-5">
             <div class="flex-shrink-0">
-              <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+              <UserCircleIcon
+                class="h-10 w-10 text-white rounded-full transition-colors hover:bg-[rgba(150,150,150,0.2)]"
+                aria-hidden="true"
+              />
             </div>
             <div class="ml-3">
               <div class="text-base font-medium leading-none text-white">
@@ -143,7 +145,12 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/vue";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+  UserCircleIcon,
+} from "@heroicons/vue/24/outline";
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
@@ -161,6 +168,7 @@ export default {
     Bars3Icon,
     BellIcon,
     XMarkIcon,
+    UserCircleIcon,
   },
   setup() {
     const store = useStore();
@@ -172,8 +180,9 @@ export default {
     ];
 
     function logout() {
-      store.commit("logout");
-      router.push({ name: "Login" });
+      store.dispatch("logout").then(() => {
+        router.push({ name: "Login" });
+      });
     }
 
     return {

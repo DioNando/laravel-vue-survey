@@ -52,7 +52,7 @@ class AuthController extends Controller
                 'error' => 'The Provided credentials are not correct'
             ], 422);
         }
-        
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
@@ -61,5 +61,17 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token
         ]);
+    }
+
+    public function logout()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        // Revoke the token that was used to authenticate the current request
+        $user->currentAccessToken()->delete();
+
+        return response(([
+            'success' => true
+        ]));
     }
 }
